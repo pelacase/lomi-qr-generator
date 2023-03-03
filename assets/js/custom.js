@@ -14,7 +14,7 @@ async function make_qr_code(data) {
             type: "rounded"
         },
         imageOptions: {
-            margin: 10
+            margin: 5
         },
         cornersSquareOptions: {
             type: "extra-rounded"
@@ -23,8 +23,8 @@ async function make_qr_code(data) {
             type: "dot"
         }
     });
-    blob_data = await qrCode.getRawData('svg')
-    url = URL.createObjectURL(blob_data);
+    let blob_data = await qrCode.getRawData('svg')
+    let url = URL.createObjectURL(blob_data);
     return url
 }
 
@@ -39,8 +39,7 @@ async function make_qr_code_container(url) {
     img.alt = title.innerText
     wrapper.appendChild(title);
     wrapper.appendChild(img);
-    img_url = await make_qr_code(url)
-    img.src = img_url
+    img.src = await make_qr_code(url)
     let images_container = document.getElementById('right-section');
     images_container.appendChild(wrapper);
 }
@@ -56,14 +55,25 @@ async function update_qr_images() {
     }
 }
 async function downloadSVGsAsZip(uris, image_names, zipFileName) {
-    // Create a new ZIP archive
+
     const zip = new JSZip();
 
-    // Loop through the PNG URIs and add them to the archive
     for (let i = 0; i < uris.length; i++) {
         const response = await fetch(uris[i]);
-        const blob = await response.blob();
-        zip.file(`${image_names[i]}.svg`, blob);
+        let svg_string = await response.text()
+        //Modfy SVG to remove background object
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svg_string, "image/svg+xml");
+        const rectElem = svgDoc.querySelector("svg > rect");
+        rectElem.remove();
+        let svg_image = svgDoc.querySelector("svg")
+        svg_image.setAttribute("height", "0.75in")
+        svg_image.setAttribute("width", "0.75in")
+        svg_image.setAttribute("viewBox", "0 0 300 300")
+
+        const serializer = new XMLSerializer();
+        const modifiedSvg = serializer.serializeToString(svgDoc);
+        zip.file(`${image_names[i]}.svg`, modifiedSvg);
     }
 
     // Generate the ZIP file and create a download link
