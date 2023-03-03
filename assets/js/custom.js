@@ -21,6 +21,9 @@ async function make_qr_code(data) {
         },
         cornersDotOptions: {
             type: "dot"
+        },
+        qrOptions: {
+            errorCorrectionLevel: "H"
         }
     });
     let blob_data = await qrCode.getRawData('svg')
