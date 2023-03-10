@@ -38,7 +38,7 @@ async function make_qr_code_container(url) {
     let wrapper = document.createElement('div');
     wrapper.className = 'qr-code-wrapper';
     let title = document.createElement('span');
-    title.innerText = url.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    title.innerText = url.toLowerCase();
     img.alt = title.innerText
     wrapper.appendChild(title);
     wrapper.appendChild(img);
@@ -76,7 +76,18 @@ async function downloadSVGsAsZip(uris, image_names, zipFileName) {
 
         const serializer = new XMLSerializer();
         const modifiedSvg = serializer.serializeToString(svgDoc);
-        zip.file(`${image_names[i]}.svg`, modifiedSvg);
+        let filename;
+        try{
+            const parsedUrl = new URL(image_names[i])
+            const path = parsedUrl.pathname
+            filename = path.startsWith('/') ? path.slice(1) : path
+            if (filename.length < 2) {
+                filename = image_names[i]
+            }
+        } catch (e) {
+            filename = image_names[i]
+        }
+        zip.file(`${filename.replace(/[^a-z0-9]/gi, '_')}.svg`, modifiedSvg);
     }
 
     // Generate the ZIP file and create a download link
@@ -106,6 +117,7 @@ function register_listeners() {
     textArea.addEventListener('input', update_qr_images);
     let form = document.getElementById('image_type')
     form.addEventListener('change', update_qr_images)
+    document.addEventListener('DOMContentLoaded', update_qr_images)
 
 }
 

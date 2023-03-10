@@ -9,11 +9,18 @@
   </head>
   <body>
     <div id="left-section">
-      <textarea id="text-box"></textarea>
+      <div id="instructions">
+        <p>Replace https://lomi.com with your desired url, click download</p>
+          <li>This tool does not provide the ability to track or change the QR code</li>
+          <li>Download size is 0.75in<sup>2</sup>. (Lomi Labels Size)</li>
+          <li>Download format is SVG, so infinitely scalable.</li>
+      </div>
+      <textarea id="text-box">https://lomi.com</textarea>
     </div>
     <form id="image_type">
       <button type="button" id="download-button">Download</button>
-      <input type="color" id="color-picker">
+      <input type="color" id="color-picker" name="color-picker">
+      <span><-- Change Colour</span>
     </form>
     <div id="right-section">
     </div>
