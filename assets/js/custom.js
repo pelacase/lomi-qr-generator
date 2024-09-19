@@ -27,7 +27,8 @@ async function make_qr_code(data) {
             type: "rounded"
         },
         imageOptions: {
-            margin: 5
+            margin: 5,
+            saveAsBlob: true
         },
         cornersSquareOptions: {
             type: "extra-rounded"
