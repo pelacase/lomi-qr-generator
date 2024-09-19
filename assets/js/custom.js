@@ -16,10 +16,12 @@ const logo_map = {
 }
 
 async function make_qr_code(data) {
+    const logo = get_selected_logo()
+    const image = (logo === 'no-logo') ? undefined : `data:image/png;base64,${logo_map[logo]}\n`
     const qrCode = new QRCodeStyling ({
         type: "svg",
         data: data,
-        image: `data:image/png;base64,${logo_map[get_selected_logo()] }\n`,
+        image: image,
         dotsOptions: {
             color: get_selected_colour(),
             type: "rounded"
